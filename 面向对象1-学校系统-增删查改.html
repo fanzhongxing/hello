@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>面向对象学校系统小练习</title>
+	<script type="text/javascript">
+		function School(name){
+			this.name = name;
+			this.gradeArr = [];
+		}
+		function Grade(name){
+			this.name = name;
+			this.classArr = [];
+		}
+		function Classes(name){
+			this.name = name;
+			this.studentArr = [];
+		}
+		function Student(name,age,sex){
+			this.name = name;
+			this.age = age;
+			this.sex = sex; 
+		}
+		stast();
+		function stast(){
+			var yd = new School();
+			while(true){
+				var meun = prompt("1.年级操作 2.班级操作 3.学生操作 4.退出")*1;
+				switch(meun){
+					case 1:
+						operat("年级",yd.gradeArr,Grade);
+						break;
+					case 2:
+						var sname = prompt("输入年级");
+						var list = isFind(sname,yd.gradeArr);
+						if(list == null){
+							alert("不存该年级");
+							break;
+						}
+						operat("班级",list.classArr,Classes);
+						break;
+					case 3:
+						var sname = prompt("输入年级");
+						var list = isFind(sname,yd.gradeArr);
+						if(list == null){
+							alert("不存该年级");
+							break;
+						}
+						var input = prompt("输入班级");
+						var arr = isFind(input,list.classArr);
+						if(arr == null){
+							alert("不存该班级");
+							break;
+						}
+						operat("学生",arr.studentArr,Student);
+						break;
+					case 4:
+						return;			
+				}
+			}
+		}
+		function operat(markup,objArr,fun){
+			while(true){
+				var childMeun = prompt(markup + "\n" + "1.增加 2.删除 3.修改 4.查询 5.退出")*1;
+				switch(childMeun){
+					case 1:
+						add(objArr,new fun(),markup);
+						break;
+					case 2:
+						del(markup,objArr);
+						break;	
+					case 3:
+						modify(markup,objArr);
+						break;
+					case 4:
+						inquire(objArr,markup);
+						break;
+					case 5:
+						return;		
+				}
+			}
+		} 
+		function isFind(sname,objArr){
+			for(var i = 0 ; i < objArr.length; i++){
+				if(objArr[i].name == sname){
+					return objArr[i];
+				}
+			}
+			return null;
+		}
+		function add(objArr,obj,markup){
+			var sname = prompt("请输入要添加的" + markup +"名")
+			if(isFind(sname,objArr) != null){
+				alert("重复了");
+				return;
+			}
+			for(var att in obj){
+				if(att == "name" || (typeof obj[att]) == "object"){
+					continue;
+				}
+				obj[att] = prompt("输入" + att + "值")
+			}
+			obj.name = sname;
+			objArr.push(obj);
+			alert("添加成功");
+		}
+		function modify(markup,objArr){
+			var find = prompt("输入你要修改的" + markup);
+			var storage = isFind(find,objArr)
+			if(storage == null){
+				alert("不存在该" + markup);
+				return;
+			}
+			for(var att in storage){
+				if((typeof storage[att]) == "object"){
+					continue;
+				}
+				storage[att] = prompt("输入新的" + att + "值");
+			}
+			alert("修改成功");
+		}
+		function del(markup,objArr){
+			var concent = prompt("输入要删除的" + markup);
+			if(isFind(concent,objArr) == null){
+				alert("不存在该" + markup);
+				return;
+			}
+			for(var i = 0; i < objArr.length; i++){
+				if(objArr[i].name == concent){
+					objArr.splice(i,1);
+					alert("删除成功");
+				}
+			}
+		}
+		function inquire(objArr,markup){
+			var warp = markup + "信息如下\n";
+			for(var i = 0; i < objArr.length; i++){
+				for(var att in objArr[i]){
+					if((typeof objArr[i][att]) == "object"){
+						continue;
+					}
+					warp += att + ":" + objArr[i][att] + ",";
+				}
+				warp += "\n";
+			}
+			alert(warp);
+		}
+	</script>
+</head>
+<body>
+
+</body>
+</html>
