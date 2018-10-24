@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<script>
+		window.onload = function(){
+			intiTable(4,4)
+		}
+		function intiTable(cols,rows){
+			var table = document.createElement("table");
+			table.setAttribute("border","1");  
+			for(var i = 0; i < cols; i++){
+				var tr = document.createElement("tr");
+				for(var j = 0; j < rows; j++){
+					var td = document.createElement("td");
+					if(j <= rows-2){
+						td.innerText = i + "-" + j;
+					}else{
+						var btn = document.createElement("button"); 
+						btn.innerText = "增加";
+						btn.onclick = function(){
+							add(this)	
+						}
+						td.appendChild(btn);
+						var btn = document.createElement("button"); 
+						btn.innerText = "修改";
+						btn.onclick = function(){
+							create(this)	
+						}
+						td.appendChild(btn);
+						var btn = document.createElement("button"); 
+						btn.innerText = "删除";
+						btn.onclick = function(){
+							del(this)	
+						}
+						td.appendChild(btn);
+					}
+					tr.appendChild(td);
+				}
+				table.appendChild(tr);
+			}	
+			document.body.appendChild(table);
+		}
+		function del(self){
+			var tr = self.parentNode.parentNode;
+			tr.parentNode.removeChild(tr);
+		}
+		function add(self){
+			var tr = self.parentNode.parentNode;
+			var newTr = tr.cloneNode(true); 
+			var btns = newTr.lastElementChild.childNodes;
+			//newTr.firstElementChild.innerText = "a";
+			btns[0].onclick = function(){add(this)};
+			btns[1].onclick = function(){create(this)};
+			btns[2].onclick = function(){del(this)};	
+			tr.parentNode.insertBefore(newTr,tr)
+		}
+		function create(self){
+			self.disabled = true;
+			var tr = self.parentNode.parentNode;
+			var list = tr.getElementsByTagName("td");
+			for(var i = 0; i < list.length-1; i++){
+				var ipt = document.createElement("input");
+				ipt.value = list[i].innerText;
+				list[i].innerText = null;
+				list[i].appendChild(ipt);
+			}
+			var btn = document.createElement("button");
+			btn.innerText = "保存";
+			btn.onclick = function(){
+				save(this)
+				self.disabled = false;
+			}
+			list[2].appendChild(btn);
+		}
+		function save(self){
+			var tr = self.parentNode.parentNode;
+			var arr = tr.getElementsByTagName("input");
+			var tds = tr.getElementsByTagName("td");
+			for(var i = 0; i < tds.length-1; i++){
+				tds[i].innerText = arr[0].value;		
+			}	
+		}
+	</script>
+</head>
+<body>
+
+</body>
+</html>
