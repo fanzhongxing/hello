@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>增删查改</title>
+	<link  href="css/validate.css" rel="stylesheet" type="text/css" />
+	<script>
+		var names = ["userGid","userName","str","groupname","ah","place","myeara"];
+		window.onload = function(){
+			document.getElementById("add").onclick = function(){
+				var tbody = document.getElementById("myTbody");
+				tbody.appendChild(setNewTr());
+				document.getElementById("x").reset();
+			}
+		}
+/*-------------------------------------------------------------------------------*/		
+		function setNewTr(){
+			var tbody = document.getElementById("myTbody");
+			var newTr = document.getElementById("muban").cloneNode(true);
+			newTr.style.display = "";
+			var trs = tbody.getElementsByTagName("tr");
+			newTr.id = "tr_" + trs.length ;  //改id
+			var tds = newTr.children;
+			if(trs.length-1 < 10){  //序号
+				tds[0].innerText = "00" + (trs.length-1);
+			}else{
+				tds[0].innerText = "0" + (trs.length-1);
+			}
+			for(var i = 0; i < names.length; i++){
+				if(names[i] == "ah"){
+					var hobbyarr = [];
+					var objs = document.getElementsByName("ah");
+					for(var j = 0; j < objs.length; j++){
+						if(objs[j].checked){
+							hobbyarr.push(objs[j].value);
+						}
+					}
+					tds[i+1].innerText = hobbyarr.join(",");
+				}else{
+					tds[i+1].innerText = document.getElementsByName(names[i])[0].value;
+				}
+			}
+			newTr.lastElementChild.firstElementChild.onclick = function(){
+				amend(newTr);
+			}
+			return newTr;
+		}
+	/*--------------------------------------------------------------------------*/
+		function amend(newTr){
+			for(var i = 1; i < newTr.children.length-1; i++){
+				var trContent = newTr.children[i].innerText
+				if(names[i-1] == "ah"){
+					var checkBoxs = document.getElementsByName(names[i-1]);
+					var interlist = trContent.split(",");
+					for(var j = 0; j < checkBoxs.length; j++){
+						if(interlist.indexOf(checkBoxs[j].value) >= 0){
+							checkBoxs[j].checked = true;
+						}
+					}
+					continue;
+				}
+				document.getElementsByName(names[i-1])[0].value = trContent;
+			}
+			document.getElementById("add").setAttribute("class","hide");
+			document.getElementById("chonzhi").setAttribute("class","hide");
+			document.getElementById("update").setAttribute("class","");
+			document.getElementById("update").onclick = function(){
+				save(newTr)
+			}
+		}
+	/*-----------------------------------------------------------------------*/	
+		function save(oldTr){
+			var newTr = setNewTr();
+			newTr.firstElementChild.innerText = oldTr.firstElementChild.innerText;//保留编号
+			oldTr.parentNode.insertBefore(newTr,oldTr);
+			oldTr.parentNode.removeChild(oldTr)
+			document.getElementById("add").setAttribute("class","");
+			document.getElementById("chonzhi").setAttribute("class","");
+			document.getElementById("update").setAttribute("class","hide");
+			document.getElementById("x").reset();
+		}
+/*-------------------------------------------------------------------------------------*/	
+		function del(self){
+			var tr = self.parentNode.parentNode;
+			tr.parentNode.removeChild(tr);
+		}	
+	</script>    
+</head>
+<body>
+	<h1>增删查改DEMO</h1><hr/>
+	<form action="" id="x">
+		<table width="800" border="0" class="ad" cellpadding="0" cellspacing="1" bgcolor="#999999" id="testTable">
+		 　　<tr bgcolor="#ffffff">
+				<td align="right" bgcolor="#EEEEEE" width="150px" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					玩家账号 : 
+				</td>
+				<td align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<input name="userGid" type="text" class="input" id="userGid" reg="^\w{2}\d+$"/>  
+					<label>开头[2个字母简写]+用户ID[数字]如:sd10059</label>
+				</td>
+			</tr>
+			<tr bgcolor="#ffffff">  
+				<td align="right" bgcolor="#EEEEEE" width="150px" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					中文姓名 : 
+				</td>
+				<td align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<input name="userName" class="input" type="text" id="userName" reg="^[\u4e00-\u9fa5]+$"/>  
+					<label>只允许中文字符</label>
+				</td>
+			</tr>
+			<tr bgcolor="#ffffff">
+				<td align="right" bgcolor="#EEEEEE" width="150px" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					电话号码 : 
+				</td>
+				<td align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<input name="str" class="input" type="text" id="str" reg="^\d{3}-\d{8}$|^\d{4}-\d{7}$"/>   
+					<label>国内电话号码，格式: 0832-4405222 或 021-87888822</label>
+				</td>
+			</tr>
+			<tr bgcolor="#ffffff">
+				<td align="right" bgcolor="#EEEEEE" width="150px" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					邮箱地址 : 
+				</td>
+				<td align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<input name="groupname" class="input" type="text" id="groupname" reg="^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"/>  
+					<label>邮箱地址，如wangking717@qq.com</label>
+				</td>
+			</tr>
+			<tr bgcolor="#ffffff">
+				<td align="right" bgcolor="#EEEEEE" width="150px" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					爱好 : 
+				</td>
+				<td align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<input name="ah" type="checkbox" value="看书"/>看书
+					<input name="ah" type="checkbox" value="写字"/>写字
+					<input name="ah" type="checkbox" value="编程"/>编程 
+					<input name="ah" type="checkbox" value="看美女"/>看美女
+				</td>
+			</tr>
+			<tr bgcolor="#ffffff">
+				<td align="right" bgcolor="#EEEEEE" width="150px" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					来自哪里 : 
+				</td>
+				<td align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<select id="place" name="place" reg="[^0]">
+					  <option value="0">－－请选择你来自哪里－－</option>
+					  <option value="湖南" myAttr="0">湖南</option>
+					  <option value="上海" myAttr="1">上海</option>
+					  <option value="四川" myAttr="2">四川</option>
+					</select> <span name="easyTip"></span>
+				</td>
+			</tr>
+			<tr bgcolor="#ffffff">
+				<td align="right" bgcolor="#EEEEEE" width="150px" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					文本 : 
+				</td>
+				<td align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<textarea id="myeara" name="myeara" reg="^\w+$" cols="40" rows="5"></textarea>
+					<label>文本不能为空</label>
+				</td>
+			</tr>
+			<tr bgcolor="#ffffff">
+				<td colspan="2" align="left" style="padding-left: 5px; padding-top: 4px; padding-bottom: 4px; padding-right: 18px;">
+					<input type="button" id="update" class="hide" value="修改" onclick="updateSubmit()"/>
+					<input type="button" id="add" value="提交" onclick="present()"/>
+					<input type="reset" id="chonzhi" value="重置"/>
+				</td>
+			</tr>
+		</table>
+	</form>	
+	<table cellspacing="0" cellpadding="0">
+		<tbody id="myTbody">
+			<tr>
+				<th>编号</th>
+				<th>玩家账号</th>
+				<th>中文姓名</th>
+				<th>电话号码</th>
+				<th>邮箱地址</th>
+				<th>爱好</th>
+				<th>来自哪里</th>
+				<th>文本</th>
+				<th>操作按钮</th>
+			</tr>	
+			<tr id="muban" style="display: none";>
+				<td myattr="num">001</td>
+				<td myattr="userGid">kane</td>
+				<td myattr="userName">老猪</td>
+				<td myattr="str">189274671866</td>
+				<td myattr="groupname">546822140@qq.com</td>
+				<td myattr="ah">看书,写字</td>
+				<td myattr="place">湖南</td>
+				<td myattr="myeara">fda</td>
+				<td>
+					<a href="javaScript:void(0);">修 改</a>
+					&nbsp;&nbsp;<a href="javaScript:void(0);" onclick="del(this)">删 除</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
