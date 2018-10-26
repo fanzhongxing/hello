@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>贪吃蛇</title>
+	<style>
+		table{
+			border:2px solid #000;
+			background-color: #ccc;
+		}
+		.span{
+			margin-left: 525px;
+			border:1px solid #000;		
+		}
+		.separate{
+			height: 10px;
+		}
+	</style>
+</head>
+<body>
+	<button onclick="start()">开始游戏</button>
+	<button onclick="window.location.href = window.location">再来一局</button>
+	<button onclick="stop()" id="stop">暂停</button>
+	<button onclick="stop()" id="attacca" style="display: none">继续</button>
+	<span class="span" id="span">得分：000</span>
+	<div class="separate"></div>  <!-- 美化 -->
+<script>
+	function setMap(cols,rows){
+		var table = document.createElement("table");
+		table.style.width = "800px";
+		table.style.height = "800px";
+		for(var i = 0; i < cols; i++){
+			var tr = document.createElement("tr");
+			for(var j = 0; j < rows; j++){
+				var td = document.createElement("td");
+				tr.appendChild(td);
+			}
+			table.appendChild(tr);
+		}
+		document.body.appendChild(table);
+	}
+
+	setMap(20,20);
+	var snake = [[5,5]];/*初始化蛇*/		
+	var food = [];  /*初始化食物*/
+	var x = 0;
+	var y = 0;
+	var timer = null;
+	var mark = true;
+	var grade = 0;
+	var record = null;/*判断按键方向不能反向*/
+	var trs = document.getElementsByTagName("tr");
+
+	function change(){ 
+		for(var i = 0; i < snake.length; i++){
+			if(i == 0){
+				trs[snake[i][0]].children[snake[i][1]].style.backgroundColor = "#0021D7";
+			}else{
+				trs[snake[i][0]].children[snake[i][1]].style.backgroundColor = "#484848";
+			}		
+		}	
+	}	
+
+	function cancel(){
+		for(var i = 0; i < snake.length; i++){
+		 	trs[snake[i][0]].children[snake[i][1]].style.backgroundColor = "#ccc";
+		}
+	}
+	/*控制方向*/
+	document.onkeydown = function(event){ 
+		if(event.keyCode == record){
+			return;
+		}
+		switch(event.keyCode){
+			case 37:
+				x = 0;
+				y = -1;
+				record = 39;
+				break;
+			case 38:				
+				x = -1;
+				y = 0;
+				record = 40;
+				break;
+			case 39:
+				x = 0;
+				y = 1;
+				record = 37;
+				break;
+			case 40:
+				x = 1;
+				y = 0;
+				record = 38;
+				break;
+		}
+	}
+	/*制造食物*/
+	function production(){   
+		food[0] = random();
+		food[1] = random();
+		for(var i = 0; i < snake.length; i++){
+			if(food[0] == snake[i][0] && food[1] == snake[i][1]){
+				production();
+			}
+		}
+		var td = trs[food[0]].children[food[1]];
+		td.style.backgroundColor = "#F47E17";
+	}
+
+	function sport(){
+		var span = document.getElementById("span");
+		if(isDie()){
+			alert("Gome over");
+			clearInterval(timer);
+			return ;
+		}
+		cancel();
+		snake.unshift([snake[0][0]+x, snake[0][1]+y]);
+		snake.pop();
+		if(snake[0][0] == food[0] && snake[0][1] == food[1]){
+			snake.push([food[0]-x, food[1] - y]);
+			grade++;
+			if(grade < 10){
+				span.innerHTML = "得分：00" + grade;
+			}else if(grade < 100){
+				span.innerHTML = "得分：0" + grade;
+			}else{
+				span.innerHTML = "得分：" + grade;
+			}
+			production();
+		}
+		change();
+	}
+	/*开始游戏*/
+	function start(){ 	
+		timer = setInterval("sport()",200);
+		production();
+	}
+	/*暂停or继续游戏*/
+	function stop(){
+		var btn1 = document.getElementById("stop");
+		var btn2 = document.getElementById("attacca");
+		if(mark){
+			clearInterval(timer);
+			btn1.style = "display:none"
+			btn2.style = "display:"
+		}else{
+			timer = setInterval("sport()",200);
+			btn1.style = "display:"
+			btn2.style = "display:none"
+		}
+		mark = !mark;
+	}
+
+	/*产生随机数*/
+	function random(){ 
+		var num = Math.floor(Math.random()*trs.length);
+		return num;
+	}
+	/*判断撞墙&撞自己*/
+	function isDie(){
+		if(snake[0][0] >= trs.length || snake[0][1] >= trs.length || snake[0][0] < 0 || snake[0][1] < 0){
+			return true;
+		}
+		for(var i = 1; i < snake.length; i++){
+			if(snake[0][0] == snake[i][0] && snake[0][1] == snake[i][1]){
+				return true;
+			}	
+		}	
+	}
+</script>
+</body>
+</html>
