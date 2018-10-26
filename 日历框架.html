@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<script>
+		calendar();
+		function calendar(){
+			var date = new Date();
+			while(true){
+				var callist = ["日 ","一 ","二 ","三 ","四 ","五 ","六 "];
+				var frameStr = int(date,callist);
+				menu = prompt("       " + date.getFullYear() + "年" + (date.getMonth()+1) + "月" + frameStr + "\n" + "1.上一年 2.下一年 3.上一月 4.下一月 5.上一天 6.下一天 7.退出")*1;
+				switch(menu){
+					case 1:
+						date.setFullYear(date.getFullYear()-1);
+						break;
+					case 2:
+						date.setFullYear(date.getFullYear()+1);
+						break;
+					case 3:
+						date.setMonth(date.getMonth()-1);
+						break;
+					case 4:
+						date.setMonth(date.getMonth()+1);
+						break;
+					case 5:
+						date.setDate(date.getDate()-1);
+						break;
+					case 6:
+						date.setDate(date.getDate()+1);
+						break;	
+					default:
+						return;				
+				}
+			}
+		}
+		function int(date,callist){    //构造日历
+			var newDate = new Date(date.getFullYear(),date.getMonth(),date.getDay());//克隆
+			newDate.setMonth(newDate.getMonth()+1); //加一是为了获取本月最后一天
+			newDate.setDate(0); //获取本月最后一天从而判断一个月有几天
+			var length = newDate.getDate();
+			newDate.setDate(1); //判断每月第一天是星期几
+			var day = newDate.getDay(); 
+			for(var i = 1; i <= length+day; i++){
+	    		if(i <= day){
+	    			callist.push("  "); 
+	    		}else{
+	    			callist.push(i-day);
+	    		}
+    		}
+    		var frameStr = "";
+	    	for(var i = 0; i < callist.length; i++){
+	    		if(date.getDate() == callist[i]){
+	    			callist[i] += "*";
+	    		}
+	    		if(i%7 == 0){
+	    			frameStr += "\n";
+	    		}
+	    		if(callist[i] <= 9){
+	    			frameStr += "  ";
+	    		}
+	    		frameStr += callist[i] + " ";
+	    	}
+	    	return frameStr;
+		}
+	</script>
+</head>
+<body>
+</body>
+</html>
